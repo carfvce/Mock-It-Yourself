@@ -40,8 +40,35 @@
       button:hover {
         background-color: #0056b3;
       }
-      .section-container {
+      table {
+        width: 100%;
         margin-top: 20px;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      .correct {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .incorrect {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .left {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .partially-correct {
+        background-color: #cce5ff;
+        color: #004085;
       }
       .input-container {
         display: flex;
@@ -59,32 +86,15 @@
         border: 1px solid #ddd;
         border-radius: 5px;
       }
-      #score-table {
-        width: 100%;
-        margin-top: 20px;
-        border-collapse: collapse;
-      }
-      #score-table th,
-      #score-table td {
-        padding: 5px;
-        text-align: center;
-        border: 1px solid #ddd;
-      }
-      #score-table th {
-        background-color: #007bff;
-        color: white;
-      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>UCEED/CEED Test Score Tracker</h1>
+      <h1>UCEED/CEED Mock Test Tracker</h1>
 
-      <!-- Scoring Configuration -->
+      <!-- Marking Scheme -->
       <div class="section-container">
         <h2>Marking Scheme</h2>
-
-        <!-- NAT Section -->
         <div class="input-container">
           <label for="nat-correct">NAT Correct Marks:</label>
           <input type="number" id="nat-correct" value="3" />
@@ -93,7 +103,6 @@
           <label for="nat-incorrect">NAT Incorrect Marks:</label>
           <input type="number" id="nat-incorrect" value="0" />
         </div>
-        <!-- MCQ Section -->
         <div class="input-container">
           <label for="mcq-correct">MCQ Correct Marks:</label>
           <input type="number" id="mcq-correct" value="3" />
@@ -102,146 +111,219 @@
           <label for="mcq-incorrect">MCQ Incorrect Marks:</label>
           <input type="number" id="mcq-incorrect" value="-1" />
         </div>
-        <!-- warm -->
-        <div class="input-container">
-          <label for="msq-warn">MSQ now has partial marking, choose below acc to marking scheme</label>
-        </div>
       </div>
 
-      <!-- Buttons for NAT -->
+      <!-- Section Buttons -->
       <div class="section-container">
         <h2>NAT</h2>
-        <button onclick="updateScore('NAT', 'correct')">Correct</button>
-        <button onclick="updateScore('NAT', 'incorrect')">Incorrect</button>
-        <button onclick="updateScore('NAT', 'did-not-attempt')">Did Not Attempt</button>
+        <button onclick="updateScoreWithQuestion('NAT', 'correct')">Correct</button>
+        <button onclick="updateScoreWithQuestion('NAT', 'incorrect')">Incorrect</button>
+        <button onclick="updateScoreWithQuestion('NAT', 'did-not-attempt')">Left</button>
       </div>
 
-      <!-- Buttons for MSQ -->
       <div class="section-container">
         <h2>MSQ</h2>
         <button onclick="updateMSQScore(4)">+4</button>
         <button onclick="updateMSQScore(3)">+3</button>
         <button onclick="updateMSQScore(2)">+2</button>
         <button onclick="updateMSQScore(1)">+1</button>
-        <button onclick="updateMSQScore(0)">+0</button>
+        <button onclick="updateMSQScore(0)">0</button>
         <button onclick="updateMSQScore(-1)">-1</button>
         <button onclick="updateMSQScore(-2)">-2</button>
       </div>
 
-      <!-- Buttons for MCQ -->
       <div class="section-container">
         <h2>MCQ</h2>
-        <button onclick="updateScore('MCQ', 'correct')">Correct</button>
-        <button onclick="updateScore('MCQ', 'incorrect')">Incorrect</button>
-        <button onclick="updateScore('MCQ', 'did-not-attempt')">Did Not Attempt</button>
+        <button onclick="updateScoreWithQuestion('MCQ', 'correct')">Correct</button>
+        <button onclick="updateScoreWithQuestion('MCQ', 'incorrect')">Incorrect</button>
+        <button onclick="updateScoreWithQuestion('MCQ', 'did-not-attempt')">Left</button>
       </div>
 
-      <!-- Total Score Display -->
-      <div id="score-box" class="section-container">
-        <h2>Total Score: <span id="total-score">0</span></h2>
-      </div>
-
-      <!-- Previous Scores Table -->
-      <div>
-        <table id="score-table">
+      <!-- Question Tracker Tables -->
+      <div class="section-container">
+        <h2>Question Tracker (NAT)</h2>
+        <table id="nat-tracker">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Section</th>
-              <th>Correct</th>
-              <th>Incorrect</th>
-              <th>Left</th>
-              <th>Accuracy (%)</th>
-              <th>Score</th>
+              <th>Serial No.</th>
+              <th>Question No.</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <button id="save-score">Save Scores</button>
+      <div class="section-container">
+        <h2>Question Tracker (MSQ)</h2>
+        <table id="msq-tracker">
+          <thead>
+            <tr>
+              <th>Serial No.</th>
+              <th>Question No.</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="section-container">
+        <h2>Question Tracker (MCQ)</h2>
+        <table id="mcq-tracker">
+          <thead>
+            <tr>
+              <th>Serial No.</th>
+              <th>Question No.</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Total Score Display -->
+      <div class="section-container">
+        <h2>Total Score: <span id="total-score">0</span></h2>
+      </div>
+
+      <!-- Summary Table -->
+      <div class="section-container">
+        <button onclick="generateTotalScore()">Generate Total Score</button>
+        <table id="summary-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Net Questions Attempted</th>
+              <th>Correct</th>
+              <th>Incorrect</th>
+              <th>Not Attempted</th>
+              <th>Accuracy (%)</th>
+              <th>Total Score</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
 
     <script>
-      const scores = {
-        NAT: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
-        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
-        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0, accuracy: 0 },
+      let globalSerial = 1; // Start serial number from 1 for all sections
+      const sectionCounters = {
+        NAT: 1, // Start question number from 1 for each section
+        MSQ: 1,
+        MCQ: 1
       };
 
-      function updateScore(section, type) {
-        const correctMarks = parseFloat(
-          document.getElementById(`${section.toLowerCase()}-correct`).value
-        );
-        const incorrectMarks = parseFloat(
-          document.getElementById(`${section.toLowerCase()}-incorrect`).value
-        );
+      const scores = {
+        NAT: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
+        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
+        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
+      };
+
+      // Update Scores for NAT, MCQ
+      function updateScoreWithQuestion(section, type) {
+        const correctMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-correct`).value);
+        const incorrectMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-incorrect`).value);
+        const questionNumber = sectionCounters[section]++; // Get question number for section and increment
+        const currentSerial = globalSerial++; // Increment global serial for each new question
+        let status;
+        let rowClass;
 
         if (type === "correct") {
+          status = "Correct";
+          rowClass = "correct";
           scores[section].correct++;
           scores[section].total += correctMarks;
         } else if (type === "incorrect") {
+          status = "Incorrect";
+          rowClass = "incorrect";
           scores[section].incorrect++;
           scores[section].total += incorrectMarks;
-        } else if (type === "did-not-attempt") {
+        } else {
+          status = "Left";
+          rowClass = "left";
           scores[section].left++;
         }
 
-        scores[section].accuracy = calculateAccuracy(
-          scores[section].correct,
-          scores[section].incorrect,
-          scores[section].left
-        );
-        updateTotalScore();
-      }
-
-      function updateMSQScore(points) {
-        if (points > 0) {
-          scores.MSQ.correct++;
-        } else if (points === 0) {
-          scores.MSQ.left++;
-        } else {
-          scores.MSQ.incorrect++;
+        // Update maximum marks for each section
+        if (section === "NAT" || section === "MCQ") {
+          scores[section].maxMarks += correctMarks;
         }
-        scores.MSQ.total += points;
-        scores.MSQ.accuracy = calculateAccuracy(
-          scores.MSQ.correct,
-          scores.MSQ.incorrect,
-          scores.MSQ.left
-        );
+
+        // Update Question Tracker Table with color-coded rows
+        const table = document.getElementById(`${section.toLowerCase()}-tracker`);
+        const row = table.insertRow();
+        row.classList.add(rowClass);
+        row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
+
         updateTotalScore();
       }
 
-      function calculateAccuracy(correct, incorrect, left) {
-        const totalQuestions = correct + incorrect + left;
-        return totalQuestions > 0
-          ? ((correct / totalQuestions) * 100).toFixed(2)
-          : "0.00";
+      // Update Scores for MSQ
+      function updateMSQScore(points) {
+        const section = "MSQ";
+        const questionNumber = sectionCounters[section]++;
+        const currentSerial = globalSerial++;
+        let status;
+        let rowClass;
+
+        if (points === 4) {
+          status = "Correct";
+          rowClass = "correct";
+          scores[section].correct++; // Treat +4 as correct
+        } else if (points > 0) {
+          status = "Partially Correct";
+          rowClass = "partially-correct";
+          scores[section].correct++; // Treat partial scores as correct
+        } else if (points === 0) {
+          status = "Left";
+          rowClass = "left";
+          scores[section].left++;
+        } else {
+          status = "Incorrect";
+          rowClass = "incorrect";
+          scores[section].incorrect++;
+        }
+
+        scores[section].total += points;
+
+        // Update Question Tracker Table with color-coded rows
+        const table = document.getElementById(`${section.toLowerCase()}-tracker`);
+        const row = table.insertRow();
+        row.classList.add(rowClass);
+        row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
+        updateTotalScore();
       }
 
+      // Update Total Score Calculation
       function updateTotalScore() {
-        const totalScore =
-          scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
+        const totalScore = scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
         document.getElementById("total-score").textContent = totalScore;
       }
 
-      document.getElementById("save-score").addEventListener("click", () => {
-        const date = new Date().toLocaleDateString();
-        const tableBody = document.querySelector("#score-table tbody");
+      // Generate Total Summary Table
+      function generateTotalScore() {
+        const tableBody = document.querySelector("#summary-table tbody");
+        tableBody.innerHTML = ""; // Clear previous content
 
-        Object.keys(scores).forEach((section) => {
+        // Sections Calculation
+        ["NAT", "MSQ", "MCQ"].forEach((section) => {
+          const netAttempted = scores[section].correct + scores[section].incorrect + scores[section].left;
+          const accuracy = netAttempted > 0 ? ((scores[section].correct) / netAttempted * 100).toFixed(2) : 0;
           const row = tableBody.insertRow();
           row.innerHTML = `
-            <td>${date}</td>
             <td>${section}</td>
+            <td>${netAttempted}</td>
             <td>${scores[section].correct}</td>
             <td>${scores[section].incorrect}</td>
             <td>${scores[section].left}</td>
-            <td>${scores[section].accuracy}</td>
+            <td>${scores[section].maxMarks}</td>
+            <td>${accuracy}%</td>
             <td>${scores[section].total}</td>
           `;
         });
-      });
+      }
     </script>
   </body>
 </html>
