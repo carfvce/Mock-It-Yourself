@@ -216,9 +216,9 @@
       };
 
       const scores = {
-        NAT: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
-        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
-        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0, maxMarks: 0 },
+        NAT: { correct: 0, incorrect: 0, left: 0, total: 0 },
+        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0 },
+        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0 },
       };
 
       // Update Scores for NAT, MCQ
@@ -244,11 +244,6 @@
           status = "Left";
           rowClass = "left";
           scores[section].left++;
-        }
-
-        // Update maximum marks for each section
-        if (section === "NAT" || section === "MCQ") {
-          scores[section].maxMarks += correctMarks;
         }
 
         // Update Question Tracker Table with color-coded rows
@@ -293,6 +288,7 @@
         const row = table.insertRow();
         row.classList.add(rowClass);
         row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
+
         updateTotalScore();
       }
 
@@ -318,7 +314,6 @@
             <td>${scores[section].correct}</td>
             <td>${scores[section].incorrect}</td>
             <td>${scores[section].left}</td>
-            <td>${scores[section].maxMarks}</td>
             <td>${accuracy}%</td>
             <td>${scores[section].total}</td>
           `;
