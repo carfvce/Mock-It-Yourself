@@ -7,8 +7,8 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
+        background-color: #eceff4;
+        color: #2e3440;
         margin: 0;
         padding: 0;
       }
@@ -16,29 +16,29 @@
         width: 90%;
         margin: 50px auto;
         padding: 20px;
-        background-color: #fff;
+        background-color: #e5e9f0;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
       h1 {
         text-align: center;
-        color: #007bff;
+        color: #5e81ac;
       }
       h2 {
-        color: #007bff;
+        color: #5e81ac;
       }
       button {
         padding: 10px 20px;
         margin: 5px;
-        background-color: #007bff;
-        color: #fff;
+        background-color: #5e81ac;
+        color: #eceff4;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
       }
       button:hover {
-        background-color: #0056b3;
+        background-color: #4c566a;
       }
       table {
         width: 100%;
@@ -48,27 +48,27 @@
       th, td {
         padding: 8px;
         text-align: center;
-        border: 1px solid #ddd;
+        border: 1px solid #d8dee9;
       }
       th {
-        background-color: #007bff;
-        color: white;
+        background-color: #5e81ac;
+        color: #eceff4;
       }
       .correct {
-        background-color: #d4edda;
-        color: #155724;
+        background-color: #a3be8c;
+        color: #2e3440;
       }
       .incorrect {
-        background-color: #f8d7da;
-        color: #721c24;
+        background-color: #bf616a;
+        color: #2e3440;
       }
       .left {
-        background-color: #fff3cd;
-        color: #856404;
+        background-color: #ebcb8b;
+        color: #2e3440;
       }
       .partially-correct {
-        background-color: #cce5ff;
-        color: #004085;
+        background-color: #88c0d0;
+        color: #2e3440;
       }
       .input-container {
         display: flex;
@@ -83,16 +83,15 @@
         width: 50%;
         padding: 8px;
         font-size: 16px;
-        border: 1px solid #ddd;
+        border: 1px solid #d8dee9;
         border-radius: 5px;
+        background-color: #e5e9f0;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>UCEED/CEED Mock Test Tracker</h1>
-
-      <!-- Marking Scheme -->
       <div class="section-container">
         <h2>Marking Scheme</h2>
         <div class="input-container">
@@ -112,15 +111,12 @@
           <input type="number" id="mcq-incorrect" value="-1" />
         </div>
       </div>
-
-      <!-- Section Buttons -->
       <div class="section-container">
         <h2>NAT</h2>
         <button onclick="updateScoreWithQuestion('NAT', 'correct')">Correct</button>
         <button onclick="updateScoreWithQuestion('NAT', 'incorrect')">Incorrect</button>
         <button onclick="updateScoreWithQuestion('NAT', 'did-not-attempt')">Left</button>
       </div>
-
       <div class="section-container">
         <h2>MSQ</h2>
         <button onclick="updateMSQScore(4)">+4</button>
@@ -131,15 +127,12 @@
         <button onclick="updateMSQScore(-1)">-1</button>
         <button onclick="updateMSQScore(-2)">-2</button>
       </div>
-
       <div class="section-container">
         <h2>MCQ</h2>
         <button onclick="updateScoreWithQuestion('MCQ', 'correct')">Correct</button>
         <button onclick="updateScoreWithQuestion('MCQ', 'incorrect')">Incorrect</button>
         <button onclick="updateScoreWithQuestion('MCQ', 'did-not-attempt')">Left</button>
       </div>
-
-      <!-- Question Tracker Tables -->
       <div class="section-container">
         <h2>Question Tracker (NAT)</h2>
         <table id="nat-tracker">
@@ -153,7 +146,6 @@
           <tbody></tbody>
         </table>
       </div>
-
       <div class="section-container">
         <h2>Question Tracker (MSQ)</h2>
         <table id="msq-tracker">
@@ -167,7 +159,6 @@
           <tbody></tbody>
         </table>
       </div>
-
       <div class="section-container">
         <h2>Question Tracker (MCQ)</h2>
         <table id="mcq-tracker">
@@ -181,13 +172,9 @@
           <tbody></tbody>
         </table>
       </div>
-
-      <!-- Total Score Display -->
       <div class="section-container">
         <h2>Total Score: <span id="total-score">0</span></h2>
       </div>
-
-      <!-- Summary Table -->
       <div class="section-container">
         <button onclick="generateTotalScore()">Generate Total Score</button>
         <table id="summary-table">
@@ -206,30 +193,17 @@
         </table>
       </div>
     </div>
-
     <script>
-      let globalSerial = 1; // Start serial number from 1 for all sections
-      const sectionCounters = {
-        NAT: 1, // Start question number from 1 for each section
-        MSQ: 1,
-        MCQ: 1
-      };
-
-      const scores = {
-        NAT: { correct: 0, incorrect: 0, left: 0, total: 0 },
-        MSQ: { correct: 0, incorrect: 0, left: 0, total: 0 },
-        MCQ: { correct: 0, incorrect: 0, left: 0, total: 0 },
-      };
-
-      // Update Scores for NAT, MCQ
+      let globalSerial = 1;
+      const sectionCounters = { NAT: 1, MSQ: 1, MCQ: 1 };
+      const scores = { NAT: { correct: 0, incorrect: 0, left: 0, total: 0 }, MSQ: { correct: 0, incorrect: 0, left: 0, total: 0 }, MCQ: { correct: 0, incorrect: 0, left: 0, total: 0 } };
       function updateScoreWithQuestion(section, type) {
         const correctMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-correct`).value);
         const incorrectMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-incorrect`).value);
-        const questionNumber = sectionCounters[section]++; // Get question number for section and increment
-        const currentSerial = globalSerial++; // Increment global serial for each new question
+        const questionNumber = sectionCounters[section]++;
+        const currentSerial = globalSerial++;
         let status;
         let rowClass;
-
         if (type === "correct") {
           status = "Correct";
           rowClass = "correct";
@@ -245,78 +219,55 @@
           rowClass = "left";
           scores[section].left++;
         }
-
-        // Update Question Tracker Table with color-coded rows
         const table = document.getElementById(`${section.toLowerCase()}-tracker`);
         const row = table.insertRow();
         row.classList.add(rowClass);
         row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
-
         updateTotalScore();
       }
-
-      // Update Scores for MSQ
       function updateMSQScore(points) {
         const section = "MSQ";
         const questionNumber = sectionCounters[section]++;
         const currentSerial = globalSerial++;
         let status;
         let rowClass;
-
         if (points === 4) {
           status = "Correct";
           rowClass = "correct";
-          scores[section].correct++; // Treat +4 as correct
+          scores[section].correct++;
         } else if (points > 0) {
           status = "Partially Correct";
           rowClass = "partially-correct";
-          scores[section].correct++; // Treat partial scores as correct
-        } else if (points === 0) {
-          status = "Left";
-          rowClass = "left";
-          scores[section].left++;
-        } else {
+          scores[section].correct++;
+        } else if (points < 0) {
           status = "Incorrect";
           rowClass = "incorrect";
           scores[section].incorrect++;
+        } else {
+          status = "Left";
+          rowClass = "left";
+          scores[section].left++;
         }
-
         scores[section].total += points;
-
-        // Update Question Tracker Table with color-coded rows
         const table = document.getElementById(`${section.toLowerCase()}-tracker`);
         const row = table.insertRow();
         row.classList.add(rowClass);
         row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
-
         updateTotalScore();
       }
-
-      // Update Total Score Calculation
       function updateTotalScore() {
         const totalScore = scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
-        document.getElementById("total-score").textContent = totalScore;
+        document.getElementById("total-score").textContent = totalScore.toFixed(2);
       }
-
-      // Generate Total Summary Table
       function generateTotalScore() {
-        const tableBody = document.querySelector("#summary-table tbody");
-        tableBody.innerHTML = ""; // Clear previous content
-
-        // Sections Calculation
-        ["NAT", "MSQ", "MCQ"].forEach((section) => {
-          const netAttempted = scores[section].correct + scores[section].incorrect + scores[section].left;
-          const accuracy = netAttempted > 0 ? ((scores[section].correct) / netAttempted * 100).toFixed(2) : 0;
-          const row = tableBody.insertRow();
-          row.innerHTML = `
-            <td>${section}</td>
-            <td>${netAttempted}</td>
-            <td>${scores[section].correct}</td>
-            <td>${scores[section].incorrect}</td>
-            <td>${scores[section].left}</td>
-            <td>${accuracy}%</td>
-            <td>${scores[section].total}</td>
-          `;
+        const summaryTableBody = document.getElementById("summary-table").querySelector("tbody");
+        summaryTableBody.innerHTML = "";
+        Object.keys(scores).forEach((section) => {
+          const { correct, incorrect, left, total } = scores[section];
+          const netAttempted = correct + incorrect;
+          const accuracy = netAttempted > 0 ? ((correct / netAttempted) * 100).toFixed(2) : "0.00";
+          const row = summaryTableBody.insertRow();
+          row.innerHTML = `<td>${section}</td><td>${netAttempted}</td><td>${correct}</td><td>${incorrect}</td><td>${left}</td><td>${accuracy}</td><td>${total.toFixed(2)}</td>`;
         });
       }
     </script>
