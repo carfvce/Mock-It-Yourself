@@ -124,6 +124,7 @@
         <button onclick="updateMSQScore(2)">+2</button>
         <button onclick="updateMSQScore(1)">+1</button>
         <button onclick="updateMSQScore(0)">0</button>
+        <button onclick="updateMSQScore(-0.19)">-0.19</button>
         <button onclick="updateMSQScore(-1)">-1</button>
         <button onclick="updateMSQScore(-2)">-2</button>
       </div>
@@ -197,6 +198,7 @@
       let globalSerial = 1;
       const sectionCounters = { NAT: 1, MSQ: 1, MCQ: 1 };
       const scores = { NAT: { correct: 0, incorrect: 0, left: 0, total: 0 }, MSQ: { correct: 0, incorrect: 0, left: 0, total: 0 }, MCQ: { correct: 0, incorrect: 0, left: 0, total: 0 } };
+
       function updateScoreWithQuestion(section, type) {
         const correctMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-correct`).value);
         const incorrectMarks = parseFloat(document.getElementById(`${section.toLowerCase()}-incorrect`).value);
@@ -225,6 +227,7 @@
         row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
         updateTotalScore();
       }
+
       function updateMSQScore(points) {
         const section = "MSQ";
         const questionNumber = sectionCounters[section]++;
@@ -239,6 +242,10 @@
           status = "Partially Correct";
           rowClass = "partially-correct";
           scores[section].correct++;
+        } else if (points === -0.19) {
+          status = "Incorrect";
+          rowClass = "incorrect";
+          scores[section].incorrect++;
         } else if (points < 0) {
           status = "Incorrect";
           rowClass = "incorrect";
@@ -255,19 +262,27 @@
         row.innerHTML = `<td>${currentSerial}</td><td>${questionNumber}</td><td>${status}</td>`;
         updateTotalScore();
       }
+
       function updateTotalScore() {
-        const totalScore = scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
-        document.getElementById("total-score").textContent = totalScore.toFixed(2);
+        document.getElementById("total-score").textContent = scores.NAT.total + scores.MSQ.total + scores.MCQ.total;
       }
+
       function generateTotalScore() {
-        const summaryTableBody = document.getElementById("summary-table").querySelector("tbody");
-        summaryTableBody.innerHTML = "";
-        Object.keys(scores).forEach((section) => {
-          const { correct, incorrect, left, total } = scores[section];
-          const netAttempted = correct + incorrect;
-          const accuracy = netAttempted > 0 ? ((correct / netAttempted) * 100).toFixed(2) : "0.00";
-          const row = summaryTableBody.insertRow();
-          row.innerHTML = `<td>${section}</td><td>${netAttempted}</td><td>${correct}</td><td>${incorrect}</td><td>${left}</td><td>${accuracy}</td><td>${total.toFixed(2)}</td>`;
+        const summaryTable = document.getElementById("summary-table").getElementsByTagName('tbody')[0];
+        const sections = ["NAT", "MSQ", "MCQ"];
+        summaryTable.innerHTML = ""; // Clear existing table data
+        sections.forEach((section) => {
+          const accuracy = (scores[section].correct / (scores[section].correct + scores[section].incorrect)) * 100 || 0;
+          const row = summaryTable.insertRow();
+          row.innerHTML = `
+            <td>${section}</td>
+            <td>${scores[section].correct + scores[section].incorrect}</td>
+            <td>${scores[section].correct}</td>
+            <td>${scores[section].incorrect}</td>
+            <td>${scores[section].left}</td>
+            <td>${accuracy.toFixed(2)}%</td>
+            <td>${scores[section].total}</td>
+          `;
         });
       }
     </script>
