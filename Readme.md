@@ -29,7 +29,8 @@ The tool allows you to:
 
 - This project format and styling are shamelessly copied from the [Mock-It-Yourself repository](https://github.com/krishiv1545/Mock-It-Yourself/) created for tracking JEE mock test scores. The functionality and structure were adapted for UCEED/CEED aspirants to track their mock test performance more effectively. 
 - ChatGpt was used in making this readme file.
-- **Important for UCEED/CEED aspirants**: Since previous years' questions (PYQs) are typically available only in PDF format, this tool can be a useful resource for tracking your mock test attempts and improving your accuracy over time. 
+- **Important for UCEED/CEED aspirants**: Since previous years' questions (PYQs) are typically available only in PDF format, this tool can be a useful resource for tracking your mock test attempts and improving your accuracy over time.
+- Light Nord theme is used 
 
 ---
 
